@@ -23,7 +23,7 @@ Il y a plusieurs options :
 L’équation de base du modèle de Solow est la suivante :
 
 
-![information sur le mail](images/1.png)
+![Equation de base de Solow model](images/1.png)
 
 
 
